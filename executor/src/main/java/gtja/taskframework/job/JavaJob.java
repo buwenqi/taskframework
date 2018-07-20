@@ -28,7 +28,7 @@ public class JavaJob implements Job {
         JobDataMap jobDataMap=jobExecutionContext.getJobDetail().getJobDataMap();
         String jobFilePath=jobDataMap.getString("jobFilePath");
 
-        //动态加载要执行的文件
+        //动态加载要执行的文件，动态加载
         try {
             File file = new File(jobFilePath);
             GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
