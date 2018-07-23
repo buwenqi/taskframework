@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>Blank Page</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/fileinput.css" >
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- bootstrap table   -->
+    <link href="//cdn.bootcss.com/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/bootstrap-table/1.11.0/bootstrap-table-locale-all.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+
+
+</head>
+
+<body class="sticky-header">
+
+<section>
+    <!-- left side start-->
+    <div class="left-side sticky-left-side">
+
+        <!--logo and iconic logo start-->
+        <div class="logo">
+            <a href="index.html"><img src="images/logo.png" alt=""></a>
+        </div>
+
+        <div class="logo-icon text-center">
+            <a href="index.html"><img src="images/logo_icon.png" alt=""></a>
+        </div>
+        <!--logo and iconic logo end-->
+
+
+        <div class="left-side-inner">
+
+            <!-- visible to small devices only -->
+            <!--sidebar nav start-->
+            <ul class="nav nav-pills nav-stacked custom-nav">
+                <li><a href="blank_page.html"><i class="fa fa-laptop"></i> <span>任务管理</span></a></li>
+
+            </ul>
+            <!--sidebar nav end-->
+
+        </div>
+    </div>
+    <!-- left side end-->
+
+    <!-- main content start-->
+    <div class="main-content" >
+
+        <!-- header section start-->
+        <div class="header-section">
+
+            <!--toggle button start-->
+            <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+            <!--toggle button end-->
+
+            <!--search start-->
+            <form class="searchform" action="index.html" method="post">
+                <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
+            </form>
+            <!--search end-->
+
+
+        </div>
+        <!-- header section end-->
+
+        <!-- page heading start-->
+        <div class="page-heading">
+            <h2>任务管理</h2>
+        </div>
+        <!-- page heading end-->
+
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <section class="panel">
+                <div id="toolbar" class="btn-group">
+                    <button id="add" class="btn btn-default" data-toggle="modal" data-target="#addJobModal">
+                        <i class="glyphicon glyphicon-plus"></i>新增
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <table id="table" class="table table-striped table-hover table-bordered"
+                           data-toolbar="#toolbar"
+                           data-search="true"
+                           data-show-refresh="true"
+                           data-show-columns="true"></table>
+                </div>
+            </section>
+        </div>
+
+        <!--body wrapper end-->
+
+        <!--footer section start-->
+        <footer class="sticky-footer">
+            2014 &copy; AdminEx by ThemeBucket
+        </footer>
+        <!--footer section end-->
+
+
+    </div>
+    <!-- main content end-->
+</section>
+
+<!--模态框 -->
+<div class="modal fade" id="addJobModal" tabindex="-1" role="dialog" style="display:none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h4>添加任务</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addJobForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="job_name">任务名称</label>
+                        <div class="col-sm-4">
+                            <input name="jobName" class="form-control" id="job_name" type="text" placeholder="请输入任务名称"/>
+                        </div>
+                        <label class="col-sm-2 control-label" for="job_group">任务组</label>
+                        <div class="col-sm-4">
+                            <input name="jobGroup" class="form-control" id="job_group" type="text" placeholder="请输入任务组"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="job_cron">Cron</label>
+                        <div class="col-sm-4">
+                            <input name="jobCron" class="form-control" id="job_cron" type="text" placeholder="请输入周期"/>
+                        </div>
+                        <label class="col-sm-2 control-label" for="job_desc">任务描述</label>
+                        <div class="col-sm-4">
+                            <input name="jobDesc" class="form-control" id="job_desc" type="text" placeholder="请输入任务描述"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="author">负责人</label>
+                        <div class="col-sm-4">
+                            <input name="author" class="form-control" id="author" type="text" placeholder="请输入负责人"/>
+                        </div>
+                        <label class="col-sm-2 control-label" for="email">报警邮件</label>
+                        <div class="col-sm-4">
+                            <input name="email" class="form-control" id="email" type="text" placeholder="请输入报警邮件"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="job_filepath">文件</label>
+                        <div class="col-sm-10">
+                            <input class="file" id="job_filepath" type="file" data-show-preview="false"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="job_filetype">文件类型</label>
+                        <div class="col-sm-4">
+                            <select name="jobFileType" id="job_filetype" class="form-control">
+                                <option>java</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="addBtn" class="btn btn-default" onclick="addJob()">确定</button>
+                <a href="#" class="btn" data-dismiss="modal">取消</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tip" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>提示</h3>
+            </div>
+            <div class="modal-body" align="center">
+                <h4 id="tipContent">添加成功</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--模态框 结束-->
+
+<script type="text/javascript">
+        $('#table').bootstrapTable({
+            method:"POST",
+			contentType : "application/x-www-form-urlencoded",
+            url: '/job/jobInfo',
+            uniqueId:"id",
+            pagination:true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            queryParams:function queryParam(params){
+                var param = {
+                limit: this.limit,
+                offset: this.offset,
+                pageNumber: this.pageNumber,
+                pageSize: this.pageSize
+                };
+                return param;
+        },
+            columns: [{
+                field: 'id',
+                visible: false
+            },{
+                field: 'jobName',
+                title: '任务名称'
+            },{
+                field: 'jobGroup',
+                visible: false
+            },{
+                field: 'jobCron',
+                title: 'Cron'
+            },{
+                field: 'jobDesc',
+                visible: false
+            },{
+                field: 'jobFilePath',
+                visible: false
+            },{
+                field: 'jobFileType',
+                visible: false
+            },{
+                field: 'addTime',
+                visible: false
+            },{
+                field: 'author',
+                title: '负责人'
+            },{
+                field: 'email',
+                visible: false
+            },{
+                field: 'jobStatus',
+                title: '状态'
+            },{
+                field: 'operation',
+                title: '操作',
+                align: 'center',
+                formatter: function(value, row, index){
+                    return  '<a id="pauseJob" class="btn btn-xs btn-info">暂停</a> '
+                    + '<a id="resumeJob" class="btn btn-xs btn-info" style="margin-left:8px">恢复</a>'
+                    + '<a id="editJob" class="btn btn-xs btn-success" style="margin-left:10px">编辑</a>'
+                    + '<a id="deleteJob" class="btn btn-xs btn-warning" style="margin-left:10px">删除</a>';
+                }
+            }]
+        });
+
+        function addJob(){
+            var param = $("#addJobForm").serializeArray();
+            debugger;
+            $("#addBtn").attr("onclick", "addJob");
+            $.ajax({
+                url:"/job/addJob",
+                method: "post",
+                data:param,
+                dataType:"json",
+                success:function(data){
+                    if(data.state=="success"){
+                        $('#tip').modal('show');
+                        $('#addJobModal').modal('hide');
+                    }
+                }
+            });
+        }
+</script>
+
+<!-- Placed js at the end of the document so the pages load faster -->
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="js/jquery-migrate-1.2.1.min.js"></script>
+
+<script src="js/modernizr.min.js"></script>
+<script src="js/jquery.nicescroll.js"></script>
+
+<script src="js/fileinput.js"></script>
+<script src="js/fileinput_locale_zh.js">
+
+
+<script src="js/scripts.js"></script>
+
+</body>
+
+</html>
