@@ -1,5 +1,7 @@
 package gtja.taskframework.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,21 +13,32 @@ public class JobInfo implements Serializable {
     /**
      * job基本信息
      */
+    @JSONField(ordinal = 1)
     private long id;
+    @JSONField(ordinal = 2)
     private String jobName;
+    @JSONField(ordinal = 3)
     private String jobGroup;
+    @JSONField(ordinal = 4)
     private String jobCron;
+    @JSONField(ordinal = 5)
     private String jobDesc;
     /**
      * job状态信息，0代表运行中，1代表已完成，2代表暂停
      */
+    @JSONField(ordinal = 11)
     private int jobStatus;
+    @JSONField(ordinal = 6)
     private String jobFilePath;
+    @JSONField(ordinal = 7)
     private String jobFileType;
 
     //附加信息
+    @JSONField(ordinal = 8)
     private Date addTime;
+    @JSONField(ordinal = 9)
     private String author;
+    @JSONField(ordinal = 10)
     private String email;
 
     public long getId() {

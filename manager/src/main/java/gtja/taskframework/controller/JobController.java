@@ -1,13 +1,21 @@
 package gtja.taskframework.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import gtja.taskframework.dao.JobInfoDao;
 import gtja.taskframework.entity.JobInfo;
 import gtja.taskframework.service.JobService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -22,18 +30,52 @@ public class JobController {
      */
     @Reference(retries = 0,timeout = 3000)
     JobService jobService;
+    @Autowired
+    JobInfoDao jobInfoDao;
+
+    @RequestMapping("/jobInfo")
+    public String getJobInfo(@RequestParam int pageNumber,int pageSize,HttpServletResponse response){
+        response.setContentType("text/json");
+        response.setCharacterEncoding("utf-8");
+        List<JobInfo> jobInfo = jobInfoDao.listAllJob();
+        int total = jobInfo.size();
+        PageHelper.startPage(pageNumber,pageSize);
+        JSONObject result = new JSONObject();
+        result.put("total", total);
+        result.put("rows", jobInfo);
+        System.out.println(result.toJSONString());
+        return result.toJSONString();
+    }
+
+    @RequestMapping(method = RequestMethod.POST,value = "/uploadFile")
+    public String upload(@RequestParam("file")MultipartFile file) throws IOException {
+        String path = "D:/job/" + file.getOriginalFilename();
+        File newFile = new File(path);
+        file.transferTo(newFile);
+        JSONObject json = new JSONObject();
+        json.put("pathUrl", path);
+        System.out.println(1);
+        return json.toJSONString();
+    }
 
     @RequestMapping("/addJob")
-    public String addJob() {
+    public String addJob(JobInfo jobInfo) {
         //1.插入本地数据库
+        jobInfo.setAddTime(new Date());
+        jobInfo.setJobStatus(1);
+        jobInfoDao.saveJobInfo(jobInfo);
+        JSONObject result = new JSONObject();
+        result.put("state", "success");
 
         //2.提交给远程executor执行任务
-        return "Success";
+        return result.toJSONString();
     }
 
     @RequestMapping("/deleteJob")
-    public String delteJob(){
-
-        return "Success";
+    public String delteJob(long id){
+        jobInfoDao.deleteJob(id);
+        JSONObject result = new JSONObject();
+        result.put("state", "success");
+        return result.toJSONString();
     }
 }
