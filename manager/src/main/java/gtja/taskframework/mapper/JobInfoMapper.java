@@ -20,7 +20,7 @@ public interface JobInfoMapper {
     @Options(useGeneratedKeys = true, keyColumn = "id",keyProperty = "id")
     void insert(JobInfo jobInfo);
 
-    @Update("update self_jobinfo set job_name=#{jobName},job_group=#{jobGroup},job_cron=#{jonCron},job_desc=#{jobDesc}," +
+    @Update("update self_jobinfo set job_name=#{jobName},job_group=#{jobGroup},job_cron=#{jobCron},job_desc=#{jobDesc}," +
             "job_filepath=#{jobFilePath},job_filetype=#{jobFileType},add_time=#{addTime},author=#{author},email=#{email}," +
             "job_status=#{jobStatus} where id=#{id}")
     void update(JobInfo jobInfo);
@@ -54,4 +54,6 @@ public interface JobInfoMapper {
     })
     List<JobInfo> selectAll();
 
+    @Update("update self_jobinfo set job_status=#{jobStatus} where id=#{id}")
+    void updateJobStatus(@Param("id") long id, @Param("jobStatus") int jobStatus);
 }

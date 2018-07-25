@@ -98,7 +98,8 @@
                            data-toolbar="#toolbar"
                            data-search="true"
                            data-show-refresh="true"
-                           data-show-columns="true"></table>
+                           data-show-columns="true"
+                           data-show-toggle="true"></table>
                 </div>
             </section>
         </div>
@@ -186,29 +187,30 @@
         <div class="modal-content">
             <div class="modal-header">
                 <a class="close" data-dismiss="modal">×</a>
-                <h4>添加任务</h4>
+                <h4>修改任务</h4>
             </div>
             <div class="modal-body">
                 <form id="editJobForm" class="form-horizontal" role="form" >
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="editJobName">任务名称</label>
                         <div class="col-sm-4">
+                            <input type="hidden" id="id" name="id"/>
                             <input name="jobName" class="form-control" id="editJobName" type="text" placeholder="请输入任务名称"/>
                         </div>
                         <label class="col-sm-2 control-label" for="editJobGroup">任务组</label>
                         <div class="col-sm-4">
-                            <input name="jobGroup" class="form-control" id="editJobGroup" type="text" placeholder="请输入任务组"/>
-                        </div>
+                        <input name="jobGroup" class="form-control" id="editJobGroup" type="text" placeholder="请输入任务组"/>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="editJobCron">Cron</label>
-                        <div class="col-sm-4">
-                            <input name="jobCron" class="form-control" id="editJobCron" type="text" placeholder="请输入周期"/>
-                        </div>
-                        <label class="col-sm-2 control-label" for="editJobDesc">任务描述</label>
-                        <div class="col-sm-4">
-                            <input name="jobDesc" class="form-control" id="editJobDesc" type="text" placeholder="请输入任务描述"/>
-                        </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="editJobCron">Cron</label>
+                <div class="col-sm-4">
+                    <input name="jobCron" class="form-control" id="editJobCron" type="text" placeholder="请输入周期"/>
+                </div>
+                <label class="col-sm-2 control-label" for="editJobDesc">任务描述</label>
+                <div class="col-sm-4">
+                    <input name="jobDesc" class="form-control" id="editJobDesc" type="text" placeholder="请输入任务描述"/>
+                </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="editAuthor">负责人</label>
@@ -238,7 +240,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="editBtn" class="btn btn-default" onclick="editJob()">确定</button>
+                <button type="button" id="editBtn" class="btn btn-default" onclick="updateJob()">确定</button>
                 <a href="#" class="btn" data-dismiss="modal">取消</a>
             </div>
         </div>
@@ -299,7 +301,7 @@
 
         $('#table').bootstrapTable({
             method:"POST",
-			contentType : "application/x-www-form-urlencoded",
+			contentType: "application/x-www-form-urlencoded",
             url: '/job/jobInfo',
             uniqueId:"id",
             pagination:true,
@@ -320,7 +322,7 @@
                 visible: false
             },{
                 field: 'jobName',
-                title: '任务名称'
+                title: '任务名称',
             },{
                 field: 'jobGroup',
                 visible: false
@@ -347,19 +349,31 @@
                 visible: false
             },{
                 field: 'jobStatus',
-                title: '状态'
+                title: '状态',
+                formatter: function(value, row, index){
+                    if(row['jobStatus']==0)
+                        return '运行';
+                    if(row['jobStatus']==1)
+                        return '完成';
+                    if(row['jobStatus']==2)
+                        return '暂停';
+                    return value;
+                }
             },{
                 field: 'operation',
                 title: '操作',
                 align: 'center',
                 formatter: function(value, row, index){
 
-                    return  '<a id="pauseJob" class="btn btn-xs btn-info">暂停</a> '
-                    + '<a id="resumeJob" class="btn btn-xs btn-info" style="margin-left:8px">恢复</a>'
-                    + '<button type="button" id="editJob" class="btn btn-xs btn-success" data-toggle="modal" data-target="#editJobModal" onclick="editJob('+row+')" style="margin-left:10px">编辑</a>'
+                    return  '<button id="pauseJob" class="btn btn-xs btn-info" onclick="pauseJob('+row.id+')" style="margin-left:8px">暂停</a> '
+                    + '<button id="resumeJob" class="btn btn-xs btn-info" onclick="resumeJob('+row.id+')" style="margin-left:8px">恢复</a>'
+                    + '<button type="button" id="editJob" class="btn btn-xs btn-success"  onclick="editJob('+row.id+')" style="margin-left:10px">编辑</a>'
                     + '<button type="button" id="deleteJob" class="btn btn-xs btn-warning" onclick="deleteById('+row.id+')" style="margin-left:10px">删除</a>';
                 }
-            }]
+            }],
+            onDblClickRow: function (row) {
+                alert(row.id);
+            }
         });
 
         function addJob(){
@@ -375,6 +389,7 @@
                     if(data.state=="success"){
                         alert("添加成功");
                         $('#addJobModal').modal('hide');
+                        $('#table').bootstrapTable('refresh','/job/jobInfo');
                     }
                 }
             });
@@ -398,7 +413,10 @@
             });
         }
 
-        function editJob(row){
+        function editJob(id){
+
+            var row = $('#table').bootstrapTable('getRowByUniqueId', id);
+            $('#id').val(row.id);
             $('#editJobName').val(row.jobName);
             $('#editJobGroup').val(row.jobGroup);
             $('#editJobCron').val(row.jobCron);
@@ -407,7 +425,60 @@
             $('#editJobFileType').val(row.jobFileType);
             $('#editAuthor').val(row.author);
             $('#editEmail').val(row.email);
-	}
+            $('#editJobModal').modal('show');
+	    }
+
+	    function updateJob(){
+            var param = $("#editJobForm").serializeArray();
+
+            $.ajax({
+                url:"/job/updateJob",
+                method: "post",
+                data:param,
+                dataType:"json",
+                success:function(data){
+                    if(data.state=="success"){
+                        alert(param.jobName);
+                        $('#editJobModal').modal('hide');
+                        $('#table').bootstrapTable('refresh','/job/jobInfo');
+                    }
+                }
+            });
+        }
+
+        function pauseJob(id){
+
+            $.ajax({
+                url:"/job/pauseJob",
+                method: "post",
+                dataType: "json",
+                data: {"id": id},
+                success: function(data){
+                    if(data.state=="success"){
+                        document.getElementById('tipContent').innerText="任务暂停！";
+                        $('#tip').modal('show');
+                        $('#table').bootstrapTable('refresh', '/job/jobInfo');
+                    }
+                }
+            });
+        }
+
+        function resumeJob(id){
+
+            $.ajax({
+                url:"/job/resumeJob",
+                method: "post",
+                dataType: "json",
+                data: {"id": id},
+                success: function(data){
+                    if(data.state=="success"){
+                        document.getElementById('tipContent').innerText="任务执行！";
+                        $('#tip').modal('show');
+                        $('#table').bootstrapTable('refresh', '/job/jobInfo');
+                    }
+                }
+            });
+        }
 
 </script>
 
