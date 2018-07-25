@@ -39,7 +39,7 @@ public class JobController {
         response.setCharacterEncoding("utf-8");
         List<JobInfo> jobInfo = jobInfoDao.listAllJob();
         int total = jobInfo.size();
-        PageHelper.startPage(pageNumber,pageSize);
+        //PageHelper.startPage(pageNumber,pageSize);
         JSONObject result = new JSONObject();
         result.put("total", total);
         result.put("rows", jobInfo);
@@ -77,6 +77,37 @@ public class JobController {
     @RequestMapping("/deleteJob")
     public String delteJob(long id){
         jobInfoDao.deleteJob(id);
+        JSONObject result = new JSONObject();
+        result.put("state", "success");
+        return result.toJSONString();
+    }
+
+    @RequestMapping("/updateJob")
+    public String updateJob(JobInfo jobInfo) {
+        //1.插入本地数据库
+        jobInfo.setAddTime(new Date());
+        jobInfo.setJobStatus(1);
+        jobInfoDao.updateJobInfo(jobInfo);
+        JSONObject result = new JSONObject();
+        result.put("state", "success");
+
+        //2.提交给远程executor执行任务
+        return result.toJSONString();
+    }
+
+    @RequestMapping("/pauseJob")
+    public String pauseJob(long id){
+        int jobStatus = 2;
+        jobInfoDao.jobStatus(id, jobStatus);
+        JSONObject result = new JSONObject();
+        result.put("state", "success");
+        return result.toJSONString();
+    }
+
+    @RequestMapping("/resumeJob")
+    public String resumeJob(long id){
+        int jobStatus = 0;
+        jobInfoDao.jobStatus(id, jobStatus);
         JSONObject result = new JSONObject();
         result.put("state", "success");
         return result.toJSONString();
