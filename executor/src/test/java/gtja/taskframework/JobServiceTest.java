@@ -1,5 +1,8 @@
 package gtja.taskframework;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import groovy.json.JsonBuilder;
 import groovy.json.internal.IO;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
@@ -46,6 +49,10 @@ public class JobServiceTest {
         jobInfo.setJobDesc("hello job");
         jobInfo.setJobFileType("java");
         System.out.println("jobInfo初始化完成！");
+    }
+
+    public void serialize(){
+        //JSON.toJSONString()
     }
 
     @Test

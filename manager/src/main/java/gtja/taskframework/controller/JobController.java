@@ -61,9 +61,12 @@ public class JobController {
     @RequestMapping("/addJob")
     public String addJob(JobInfo jobInfo) {
         //1.插入本地数据库
-        jobInfo.setAddTime(new Date());
-        jobInfo.setJobStatus(1);
-        jobInfoDao.saveJobInfo(jobInfo);
+        if(jobInfo!=null) {
+            System.out.println(jobInfo.toString());
+            jobInfo.setAddTime(new Date());
+            jobInfo.setJobStatus(1);
+            jobInfoDao.saveJobInfo(jobInfo);
+        }
         JSONObject result = new JSONObject();
         result.put("state", "success");
 
