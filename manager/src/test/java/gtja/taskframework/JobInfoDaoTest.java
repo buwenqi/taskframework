@@ -1,6 +1,7 @@
 package gtja.taskframework;
 
 import gtja.taskframework.dao.JobInfoDao;
+import gtja.taskframework.entity.ExecutorInfo;
 import gtja.taskframework.entity.JobInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +28,15 @@ public class JobInfoDaoTest {
         jobInfo.setJobCron("* * 1 * * ? *");
         jobInfo.setJobFilePath("D://job");
         jobInfo.setAddTime(new Date());
+        jobInfo.setUpdateTime(new Date());
         jobInfo.setAuthor("wenqi");
         jobInfo.setEmail("1243@qq.com");
         jobInfo.setJobStatus(1);
+        ExecutorInfo executorInfo=new ExecutorInfo();
+        executorInfo.setIpAddress("127.0.0.1");
+        executorInfo.setPort(8081);
+        executorInfo.setId(1);
+        jobInfo.setExecutorInfo(executorInfo);
         jobInfoDao.saveJobInfo(jobInfo);
     }
 }
