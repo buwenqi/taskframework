@@ -1,33 +1,41 @@
-package gtja.taskframework.task;
+package gtja.taskframework.executor.thread;
 
 import gtja.taskframework.entity.JobInfo;
 import gtja.taskframework.job.JavaJob;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by wenqi on 2018/7/19.
- * 用于加载java文件任务
+ * 用于执行quarz任务
  */
-public class JavaJobTask implements Runnable {
+public class JobTaskThread implements Runnable {
     private JobInfo jobInfo;
     private Scheduler scheduler;
+    private Class<? extends Job> jobClass;
     private Logger logger;
 
-    public JavaJobTask(JobInfo jobInfo, Scheduler scheduler) {
+    public JobTaskThread(JobInfo jobInfo, Scheduler scheduler,Class<? extends Job> jobClass) {
         this.jobInfo = jobInfo;
         this.scheduler=scheduler;
-        logger=LoggerFactory.getLogger(JavaJobTask.class);
+        this.jobClass=jobClass;
+        logger=LoggerFactory.getLogger(JobTaskThread.class);
     }
+
+    public JobTaskThread(){}
 
     @Override
     public void run() {
         //执行任务
         //任务详情
-        JobDetail jobDetail=JobBuilder.newJob(JavaJob.class).
+        JobDetail jobDetail=JobBuilder.newJob(jobClass).
                 withDescription(jobInfo.getJobDesc()).
                 usingJobData("jobFilePath",jobInfo.getJobFilePath()).
+                usingJobData("jobName",jobInfo.getJobName()).
+                usingJobData("jobGroup",jobInfo.getJobGroup()).
                 withIdentity(jobInfo.getJobName(),jobInfo.getJobGroup()).build();
 
         //触发器

@@ -33,8 +33,8 @@ public class ShellJobTest {
                 System.out.println(line);
             }
             System.out.println("Waiting for batch file ...");
-            ps.waitFor();
-            System.out.println("Batch file done.");
+            int result=ps.waitFor();
+            System.out.println("Batch file done."+result);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

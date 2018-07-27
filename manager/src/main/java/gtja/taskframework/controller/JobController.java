@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import gtja.taskframework.dao.JobInfoDao;
 import gtja.taskframework.entity.JobInfo;
-import gtja.taskframework.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,11 +24,6 @@ import java.util.List;
 @RequestMapping("/job")
 public class JobController {
 
-    /**
-     * dubbo远程服务消费者
-     */
-    @Reference(retries = 0,timeout = 3000)
-    JobService jobService;
     @Autowired
     JobInfoDao jobInfoDao;
 
@@ -75,7 +69,7 @@ public class JobController {
     }
 
     @RequestMapping("/deleteJob")
-    public String delteJob(long id){
+    public String deleteJob(long id){
         jobInfoDao.deleteJob(id);
         JSONObject result = new JSONObject();
         result.put("state", "success");

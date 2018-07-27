@@ -1,4 +1,4 @@
-package gtja.taskframework.service;
+package gtja.taskframework.service.impl;
 
 import gtja.taskframework.job.JavaJob;
 import org.quartz.*;

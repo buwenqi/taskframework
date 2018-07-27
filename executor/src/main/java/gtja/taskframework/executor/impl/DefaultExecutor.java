@@ -2,8 +2,8 @@ package gtja.taskframework.executor.impl;
 
 import gtja.taskframework.entity.JobInfo;
 import gtja.taskframework.executor.Executor;
-import gtja.taskframework.task.JavaJobTask;
-import gtja.taskframework.util.FileTypeEnum;
+import gtja.taskframework.executor.thread.JobTaskThread;
+import gtja.taskframework.job.JavaJob;
 import gtja.taskframework.util.JobStatusEnum;
 import gtja.taskframework.util.ReturnStatusEnum;
 import gtja.taskframework.util.ReturnUtil;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -32,8 +33,15 @@ public class DefaultExecutor implements Executor {
     private Logger logger = LoggerFactory.getLogger(DefaultExecutor.class);
 
     @Autowired
+    @Qualifier("jobClassMap")
+    private Map<String, Class<? extends Job>> jobClassMap;
+
+    @Autowired
     @Qualifier("threadPool")
     private ThreadPoolExecutor threadPool;
+
+    @Autowired
+    JobListener jobListener;
 
     /**
      * 初始化启动调度器
@@ -46,6 +54,15 @@ public class DefaultExecutor implements Executor {
             logger.info("[msg:{}]", "sheduler初始化失败！");
             e.printStackTrace();
         }
+
+        try {
+            scheduler.getListenerManager().addJobListener(jobListener);
+        } catch (SchedulerException e) {
+            logger.info("msg:{}", "sheduler添加监听器失败！");
+            e.printStackTrace();
+        }
+
+
     }
 
     /**
@@ -55,6 +72,7 @@ public class DefaultExecutor implements Executor {
      */
     @Override
     public String execute(JobInfo jobInfo) {
+        //首先检查任务是否已经存在，jobkey=jobName+jobGroup,如果存储，直接返回EXSISTED
         try {
             if (scheduler.checkExists(getJobKey(jobInfo))) {
                 return ReturnUtil.returnMsg(ReturnStatusEnum.SUCCESS, JobStatusEnum.EXSISTED);
@@ -62,58 +80,58 @@ public class DefaultExecutor implements Executor {
         } catch (SchedulerException e) {
             logger.info("checkExists出错");
             e.printStackTrace();
+            //异常情况都返回REturnStatus为Fail
+            return ReturnUtil.returnMsg(ReturnStatusEnum.FAILED, JobStatusEnum.RUNNING);
         }
 
         //在这里区分执行任务的线程,根据jobType做策略区分
-        if (FileTypeEnum.JAVA.val().equals(jobInfo.getJobFileType())) {
-            threadPool.execute(new JavaJobTask(jobInfo, scheduler));
-        } else if (FileTypeEnum.PYTHON.val().equals(jobInfo.getJobFileType())) {
-            //TODO
-
-        } else if (FileTypeEnum.JAR.val().equals(jobInfo.getJobFileType())) {
-            //TODO
-
-        }
+        Class<? extends Job> jobClass = jobClassMap.get(jobInfo.getJobFileType());
+        threadPool.execute(new JobTaskThread(jobInfo, scheduler, jobClass));
         return ReturnUtil.returnMsg(ReturnStatusEnum.SUCCESS, JobStatusEnum.RUNNING);
     }
 
     @Override
     public String executeOnce(JobInfo jobInfo) {
+        //任务如果不存在，返回NOTEXSISTED
         try {
-            if(!scheduler.checkExists(getJobKey(jobInfo))){
-                return ReturnUtil.returnMsg(ReturnStatusEnum.SUCCESS,JobStatusEnum.NOTEXSISTED);
+            if (!scheduler.checkExists(getJobKey(jobInfo))) {
+                return ReturnUtil.returnMsg(ReturnStatusEnum.SUCCESS, JobStatusEnum.NOTEXSISTED);
             }
         } catch (SchedulerException e) {
+            logger.info("executeOnce的checkExists出错");
             e.printStackTrace();
+            return ReturnUtil.returnMsg(ReturnStatusEnum.FAILED, JobStatusEnum.RUNNING);
         }
-        threadPool.execute(() -> {
-            try {
-                scheduler.triggerJob(getJobKey(jobInfo));
-            } catch (SchedulerException e) {
-                logger.info("触发任务出现错误！");
-                e.printStackTrace();
-            }
-        });
+
+
+        try {
+            scheduler.triggerJob(getJobKey(jobInfo));
+        } catch (SchedulerException e) {
+            logger.info("触发任务出现错误！");
+            e.printStackTrace();
+            return ReturnUtil.returnMsg(ReturnStatusEnum.FAILED, JobStatusEnum.RUNNING);
+        }
         return ReturnUtil.returnMsg(ReturnStatusEnum.SUCCESS, JobStatusEnum.TRIGGERED);
     }
 
     @Override
     public String updateJob(JobInfo jobInfo) {
         try {
-            if(!scheduler.checkExists(getTriggerKey(jobInfo))){
-                return ReturnUtil.returnMsg(ReturnStatusEnum.SUCCESS,JobStatusEnum.NOTEXSISTED);
+            if (!scheduler.checkExists(getTriggerKey(jobInfo))) {
+                return ReturnUtil.returnMsg(ReturnStatusEnum.SUCCESS, JobStatusEnum.NOTEXSISTED);
             }
         } catch (SchedulerException e) {
             logger.info("对应的触发器不存在！");
             e.printStackTrace();
+            return ReturnUtil.returnMsg(ReturnStatusEnum.FAILED, JobStatusEnum.RUNNING);
         }
 
-        CronScheduleBuilder cronScheduleBuilder=CronScheduleBuilder.cronSchedule(jobInfo.getJobCron());
-        CronTrigger trigger=TriggerBuilder.newTrigger().
-                withIdentity(jobInfo.getJobName()+"-trigger",jobInfo.getJobGroup()+"-trigger-group").
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(jobInfo.getJobCron());
+        CronTrigger trigger = TriggerBuilder.newTrigger().
+                withIdentity(jobInfo.getJobName() + "-trigger", jobInfo.getJobGroup() + "-trigger-group").
                 withSchedule(cronScheduleBuilder).build();
         try {
-            scheduler.rescheduleJob(getTriggerKey(jobInfo),trigger);
+            scheduler.rescheduleJob(getTriggerKey(jobInfo), trigger);
         } catch (SchedulerException e) {
             logger.info("触发器更新失败");
             e.printStackTrace();
@@ -162,9 +180,10 @@ public class DefaultExecutor implements Executor {
         return JobKey.jobKey(jobInfo.getJobName(), jobInfo.getJobGroup());
     }
 
-    public TriggerKey getTriggerKey(JobInfo jobInfo){
-        return TriggerKey.triggerKey(jobInfo.getJobName()+"-trigger",jobInfo.getJobGroup()+"-trigger-group");
+    public TriggerKey getTriggerKey(JobInfo jobInfo) {
+        return TriggerKey.triggerKey(jobInfo.getJobName() + "-trigger", jobInfo.getJobGroup() + "-trigger-group");
     }
+
     /**
      * bean销毁后关闭sheduler
      */

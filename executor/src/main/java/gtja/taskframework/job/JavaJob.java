@@ -19,7 +19,7 @@ import java.io.IOException;
  * 用于定义java文件的job
  */
 public class JavaJob implements Job {
-    private Logger logger=LoggerFactory.getLogger(JavaJob.class);
+    private static Logger logger=LoggerFactory.getLogger(JavaJob.class);
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {

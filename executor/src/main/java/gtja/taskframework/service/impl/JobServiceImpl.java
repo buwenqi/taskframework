@@ -1,8 +1,9 @@
-package gtja.taskframework.service;
+package gtja.taskframework.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import gtja.taskframework.entity.JobInfo;
 import gtja.taskframework.executor.Executor;
+import gtja.taskframework.service.JobService;
 import gtja.taskframework.util.JobStatusEnum;
 import gtja.taskframework.util.ReturnStatusEnum;
 import gtja.taskframework.util.ReturnUtil;

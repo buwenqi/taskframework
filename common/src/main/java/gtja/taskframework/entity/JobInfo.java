@@ -36,9 +36,14 @@ public class JobInfo implements Serializable {
     //附加信息
     private Date addTime;
 
+    private Date updateTime;
+
     private String author;
 
     private String email;
+
+    //关联的exector信息
+    ExecutorInfo executorInfo;
 
     public long getId() {
         return id;
@@ -126,6 +131,22 @@ public class JobInfo implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public ExecutorInfo getExecutorInfo() {
+        return executorInfo;
+    }
+
+    public void setExecutorInfo(ExecutorInfo executorInfo) {
+        this.executorInfo = executorInfo;
     }
 
     @Override

@@ -1,32 +1,15 @@
 package gtja.taskframework;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import groovy.json.JsonBuilder;
-import groovy.json.internal.IO;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
 import gtja.taskframework.entity.JobInfo;
 import gtja.taskframework.service.JobService;
-import gtja.taskframework.service.JobServiceDemo;
-import gtja.taskframework.util.JobStatusEnum;
-import gtja.taskframework.util.ReturnUtil;
-import org.hibernate.validator.constraints.br.TituloEleitoral;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by wenqi on 2018/7/17.
@@ -42,12 +25,12 @@ public class JobServiceTest {
     @Before
     public void init() {
         jobInfo=new JobInfo();
-        jobInfo.setJobName("jobtest1");
-        jobInfo.setJobGroup("jobtestGroup1");
+        jobInfo.setJobName("jobtest3");
+        jobInfo.setJobGroup("jobtestGroup3");
         jobInfo.setJobCron("1/3 * * * * ?");
-        jobInfo.setJobFilePath("D:\\code\\HelloJob.java");
-        jobInfo.setJobDesc("hello job");
-        jobInfo.setJobFileType("java");
+        jobInfo.setJobFilePath("D:\\code\\hello.py");
+        jobInfo.setJobDesc("python job");
+        jobInfo.setJobFileType("python");
         System.out.println("jobInfo初始化完成！");
     }
 
@@ -89,7 +72,7 @@ public class JobServiceTest {
 
     @Test
     public void removeJobTest() throws IOException, InterruptedException {
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
         System.out.println(jobService.removeJob(jobInfo));
         System.in.read();
     }
