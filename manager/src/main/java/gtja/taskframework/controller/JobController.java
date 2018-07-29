@@ -3,7 +3,9 @@ package gtja.taskframework.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import gtja.taskframework.dao.ExecutorDao;
 import gtja.taskframework.dao.JobInfoDao;
+import gtja.taskframework.entity.ExecutorInfo;
 import gtja.taskframework.entity.JobInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -106,4 +108,5 @@ public class JobController {
         result.put("state", "success");
         return result.toJSONString();
     }
+
 }

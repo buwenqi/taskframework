@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/fileinput.css" >
+    <link href="css/bootstrap-select.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
     <script src="js/html5shiv.js"></script>
@@ -50,8 +50,8 @@
             <!-- visible to small devices only -->
             <!--sidebar nav start-->
             <ul class="nav nav-pills nav-stacked custom-nav">
-                <li><a href="blank_page.html"><i class="fa fa-laptop"></i> <span>任务管理</span></a></li>
-
+                <li><a href="job.html"><i class="fa fa-laptop"></i><span>任务管理</span></a> </li>
+                <li><a href="executor.html"><i class="fa fa-laptop"></i> <span>执行器管理</span></a></li>
             </ul>
             <!--sidebar nav end-->
 
@@ -108,7 +108,7 @@
 
         <!--footer section start-->
         <footer class="sticky-footer">
-            2014 &copy; AdminEx by ThemeBucket
+            2018 &copy; taskframework
         </footer>
         <!--footer section end-->
 
@@ -159,16 +159,20 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="jobFile">文件</label>
-                        <div class="col-sm-10">
-                            <input class="file" id="jobFile" multiple type="file" name="file" data-show-preview="false"/>
-                            <input type="hidden" id="jobFilePath" name="jobFilePath"/>
+                        <div class="col-sm-4">
+                            <input name="jobFilePath" id="jobFile" type="text" class="form-control" placeholder="请输入文件路径"/>
                         </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="job_filetype">文件类型</label>
                         <div class="col-sm-4">
                             <select name="jobFileType" id="job_filetype" class="form-control">
                                 <option>java</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="executor">执行器</label>
+                        <div class="col-sm-4">
+                            <select name="executorInfo.id" id="executor" class="form-control selectpicker">
                             </select>
                         </div>
                     </div>
@@ -223,17 +227,21 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="editJobFile">文件</label>
-                        <div class="col-sm-10">
-                            <input class="file" id="editJobFile" multiple type="file" name="file" data-show-preview="false"/>
-                            <input type="hidden" id="editJobFilePath" name="jobFilePath"/>
+                        <label class="col-sm-2 control-label" for="editJobFilePath">文件</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="editJobFilePath" name="jobFilePath" class="form-control" placeholder="请输入文件路径"/>
                         </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="editJobFileType">文件类型</label>
                         <div class="col-sm-4">
                             <select name="jobFileType" id="editJobFileType" class="form-control">
                                 <option>java</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="executor">执行器</label>
+                        <div class="col-sm-4">
+                            <select name="ExecutorInfo.id" id="editExecutor" class="form-control selectpicker">
                             </select>
                         </div>
                     </div>
@@ -266,38 +274,22 @@
 
 <script type="text/javascript">
 
-         $(function () {
-	        initFileInput("jobFile");
-	    })
+        $(function(){
+            $.ajax({
+                url: '/executor/getOption',
+                dataType: "json",
+                success: function(data){
 
-	    function initFileInput(ctrlName) {
-	        var control = $('#' + ctrlName);
-	        control.fileinput({
-	            language: 'zh', //设置语言
-	            uploadUrl: "/job/uploadFile",
-                method: 'POST',
-	            uploadAsync: true, //默认异步上传
-	            showUpload: true, //是否显示上传按钮
-	            showRemove : true, //显示移除按钮
-	            showPreview : true, //是否显示预览
-	            showCaption: false,//是否显示标题
-	            browseClass: "btn btn-primary",
-	            enctype: 'multipart/form-data',
-	            uploadAsync: true,
-
-	        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
-                var form = data.form, files = data.files, extra = data.extra,
-                response = data.response, reader = data.reader;
-	            console.log('文件正在上传');
-	        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
-	                $("#jobFilePath").val(data.response.pathUrl);
-	            console.log('文件上传成功！');
-
-	        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
-	            console.log('文件上传失败！'+data.id);
-	        })
-			}
-
+                    for(var i=0;i<data.length;i++){
+                        $('.selectpicker').append("<option value="+data[i].id+">"+data[i].description+"</option>");
+                    }
+                    $('#executor').selectpicker('refresh');
+                    $('#executor').selectpicker('render');
+                    $('#editExecutor').selectpicker('refresh');
+                    $('#editExecutor').selectpicker('render');
+                }
+            });
+        });
 
         $('#table').bootstrapTable({
             method:"POST",
@@ -425,6 +417,7 @@
             $('#editJobFileType').val(row.jobFileType);
             $('#editAuthor').val(row.author);
             $('#editEmail').val(row.email);
+
             $('#editJobModal').modal('show');
 	    }
 
@@ -489,9 +482,7 @@
 <script src="js/modernizr.min.js"></script>
 <script src="js/jquery.nicescroll.js"></script>
 
-<script src="js/fileinput.js"></script>
-<script src="js/fileinput_locale_zh.js">
-
+<script src="js/bootstrap-select.js"></script>
 
 <script src="js/scripts.js"></script>
 

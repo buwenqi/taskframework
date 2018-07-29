@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>Blank Page</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/fileinput.css" >
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- bootstrap table   -->
+    <link href="//cdn.bootcss.com/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/bootstrap-table/1.11.0/bootstrap-table-locale-all.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+
+
+</head>
+
+<body class="sticky-header">
+
+<section>
+    <!-- left side start-->
+    <div class="left-side sticky-left-side">
+
+        <!--logo and iconic logo start-->
+        <div class="logo">
+            <a href="index.html"><img src="images/logo.png" alt=""></a>
+        </div>
+
+        <div class="logo-icon text-center">
+            <a href="index.html"><img src="images/logo_icon.png" alt=""></a>
+        </div>
+        <!--logo and iconic logo end-->
+
+
+        <div class="left-side-inner">
+
+            <!-- visible to small devices only -->
+            <!--sidebar nav start-->
+            <ul class="nav nav-pills nav-stacked custom-nav">
+                <li><a href="job.html"><i class="fa fa-laptop"></i><span>任务管理</span></a> </li>
+                <li><a href="executor.html"><i class="fa fa-laptop"></i> <span>执行器管理</span></a></li>
+
+            </ul>
+            <!--sidebar nav end-->
+
+        </div>
+    </div>
+    <!-- left side end-->
+
+    <!-- main content start-->
+    <div class="main-content" >
+
+        <!-- header section start-->
+        <div class="header-section">
+
+            <!--toggle button start-->
+            <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+            <!--toggle button end-->
+
+            <!--search start-->
+            <form class="searchform" action="index.html" method="post">
+                <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
+            </form>
+            <!--search end-->
+
+
+        </div>
+        <!-- header section end-->
+
+        <!-- page heading start-->
+        <div class="page-heading">
+            <h2>执行器管理</h2>
+        </div>
+        <!-- page heading end-->
+
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <section class="panel">
+                <div id="toolbar" class="btn-group">
+                    <button id="add" class="btn btn-default" data-toggle="modal" data-target="#addExecutorModal">
+                        <i class="glyphicon glyphicon-plus"></i>新增
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <table id="table" class="table table-striped table-hover table-bordered"
+                           data-toolbar="#toolbar"
+                           data-search="true"
+                           data-show-refresh="true"
+                           data-show-columns="true"
+                           data-show-toggle="true"></table>
+                </div>
+            </section>
+        </div>
+
+        <!--body wrapper end-->
+
+        <!--footer section start-->
+        <footer class="sticky-footer">
+            2018 &copy; taskframework
+        </footer>
+        <!--footer section end-->
+
+
+    </div>
+    <!-- main content end-->
+</section>
+
+<!--模态框 -->
+<div class="modal fade" id="addExecutorModal" tabindex="-1" role="dialog" style="display:none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h4>添加执行器</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addExecutorForm" class="form-horizontal" role="form" >
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="ip_address">IP地址</label>
+                        <div class="col-sm-4">
+                            <input name="ipAddress" class="form-control" id="ip_address" type="text" placeholder="请输入IP"/>
+                        </div>
+                        <label class="col-sm-2 control-label" for="port">端口</label>
+                        <div class="col-sm-4">
+                            <input name="port" class="form-control" id="port" type="text" placeholder="请输入端口号"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="username">用户名</label>
+                        <div class="col-sm-4">
+                            <input name="username" class="form-control" id="username" type="text" placeholder="请输入用户名"/>
+                        </div>
+                        <label class="col-sm-2 control-label" for="password">密码</label>
+                        <div class="col-sm-4">
+                            <input name="password" class="form-control" id="password" type="password" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="description">描述</label>
+                        <div class="col-sm-4">
+                            <input name="description" class="form-control" id="description" type="text"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="addBtn" class="btn btn-default" onclick="addExecutor()">确定</button>
+                <a href="#" class="btn" data-dismiss="modal">取消</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editExecutorModal" tabindex="-1" role="dialog" style="display:none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h4>修改执行器</h4>
+            </div>
+            <div class="modal-body">
+                <form id="editExecutorForm" class="form-horizontal" role="form" >
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="editIpAddress">IP地址</label>
+                        <div class="col-sm-4">
+                            <input type="hidden" id="id" name="id"/>
+                            <input name="ipAddress" class="form-control" id="editIpAddress" type="text" placeholder="请输入IP"/>
+                        </div>
+                        <label class="col-sm-2 control-label" for="editPort">端口</label>
+                        <div class="col-sm-4">
+                            <input name="port" class="form-control" id="editPort" type="text" placeholder="请输入端口"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="editUsername">用户名</label>
+                        <div class="col-sm-4">
+                            <input name="username" class="form-control" id="editUsername" type="text" placeholder="请输入用户名"/>
+                        </div>
+                        <label class="col-sm-2 control-label" for="editPassword">密码</label>
+                        <div class="col-sm-4">
+                            <input name="password" class="form-control" id="editPassword" type="password"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="editDescription">描述</label>
+                        <div class="col-sm-4">
+                            <input name="description" class="form-control" id="editDescription" type="text" placeholder="请输入描述"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="editBtn" class="btn btn-default" onclick="updateExecutor()">确定</button>
+                <a href="#" class="btn" data-dismiss="modal">取消</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tip" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>提示</h3>
+            </div>
+            <div class="modal-body" align="center">
+                <h4 id="tipContent">添加成功</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--模态框 结束-->
+
+<script type="text/javascript">
+
+        $('#table').bootstrapTable({
+            method:"POST",
+			contentType: "application/x-www-form-urlencoded",
+            url: '/executor/list_executor',
+            uniqueId:"id",
+            pagination:true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            queryParams:function queryParam(params){
+                var param = {
+                limit: this.limit,
+                offset: this.offset,
+                pageNumber: this.pageNumber,
+                pageSize: this.pageSize
+                };
+                return param;
+        },
+            columns: [{
+                field: 'id',
+                title: 'ID'
+            },{
+                field: 'ipAddress',
+                title: 'IP地址',
+            },{
+                field: 'port',
+                title: '端口号'
+            },{
+                field: 'username',
+                title: '用户名'
+            },{
+                field: 'password',
+                title: '密码',
+                visible: false
+            },{
+                field: 'status',
+                title: '状态',
+                formatter: function(value, row, index){
+                    if(row['status']==0)
+                        return '离线';
+                    if(row['status']==1)
+                        return '在线';
+                    return value;
+                }
+            },{
+                field: 'description',
+                title: '描述'
+            },{
+                field: 'operation',
+                title: '操作',
+                align: 'center',
+                formatter: function(value, row, index){
+
+                    return '<button id="register" class="btn btn-xs btn-info" onclick="register('+row.id+')" style="margin-left:8px">注册</a> '
+                    + '<button type="button" id="editExecutor" class="btn btn-xs btn-success"  onclick="editExecutor('+row.id+')" style="margin-left:10px">编辑</a>'
+                    + '<button type="button" id="deleteExecutor" class="btn btn-xs btn-warning" onclick="deleteById('+row.id+')" style="margin-left:10px">删除</a>';
+                }
+            }],
+
+        });
+
+        function addExecutor(){
+            var param = $("#addExecutorForm").serializeArray();
+            debugger;
+            $("#addBtn").attr("onclick", "addExecutor");
+            $.ajax({
+                url:"/executor/add_executor",
+                method: "post",
+                data:param,
+                dataType:"json",
+                success:function(data){
+                    if(data.state=="success"){
+                        alert("添加成功");
+                        $('#addExecutorModal').modal('hide');
+                        $('#table').bootstrapTable('refresh','/executor/list_executor');
+                    }
+                }
+            });
+        }
+
+        function deleteById(id){
+            $("#deleteExecutor").attr("onclick", "deleteById");
+            $.ajax({
+                url:"/executor/remove_executor",
+                dataType:"json",
+                method:"post",
+                data:{
+                    "id":id
+                },
+                success:function(data){
+                    if(data.state=="success"){
+                        document.getElementById('tipContent').innerText='删除成功！';
+                        $('#tip').modal('show');
+                        $('#table').bootstrapTable('refresh','/executor/list_executor');
+                    }
+                }
+            });
+        }
+
+        function editExecutor(id){
+
+            var row = $('#table').bootstrapTable('getRowByUniqueId', id);
+            $('#id').val(row.id);
+            $('#editIpAddress').val(row.ipAddress);
+            $('#editPort').val(row.port);
+            $('#editUsername').val(row.username);
+            $('#editPassword').val(row.password);
+            $('#editDescription').val(row.description);
+            $('#editExecutorModal').modal('show');
+
+	    }
+
+	    function updateExecutor(){
+            var param = $("#editExecutorForm").serializeArray();
+
+            $.ajax({
+                url:"/executor/update_executor",
+                method: "post",
+                data:param,
+                dataType:"json",
+                success:function(data){
+                    if(data.state=="success"){
+                        alert("修改成功");
+                        $('#editExecutorModal').modal('hide');
+                        $('#table').bootstrapTable('refresh','/executor/list_executor');
+                    }
+                }
+            });
+        }
+
+        function register(id){
+
+            var row = $('#table').bootstrapTable('getRowByUniqueId', id);
+            $.ajax({
+                url:"/executor/auto_register",
+                method: "post",
+                data: {
+                    "id": row.id,
+                    "ipAddress": row.ipAddress,
+                    "port": row.port,
+                    "username": row.username,
+                    "password": row.password,
+                    "description": row.description
+                },
+                dataType:"text",
+                success:function(data){
+                    if(data=="success"){
+                        $('#table').bootstrapTable('refresh','/executor/list_executor');
+                    }
+                }
+            });
+	    }
+
+</script>
+
+<!-- Placed js at the end of the document so the pages load faster -->
+<script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="js/jquery-migrate-1.2.1.min.js"></script>
+
+<script src="js/modernizr.min.js"></script>
+<script src="js/jquery.nicescroll.js"></script>
+
+<script src="js/fileinput.js"></script>
+<script src="js/fileinput_locale_zh.js">
+
+
+<script src="js/scripts.js"></script>
+
+</body>
+
+</html>

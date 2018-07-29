@@ -23,7 +23,7 @@ public interface JobInfoMapper {
     //TODO
     @Update("update self_jobinfo set job_name=#{jobName},job_group=#{jobGroup},job_cron=#{jobCron},job_desc=#{jobDesc}," +
             "job_filepath=#{jobFilePath},job_filetype=#{jobFileType},add_time=#{addTime},update_time=#{updateTime},author=#{author},email=#{email}," +
-            "job_status=#{jobStatus} where id=#{id}")
+            "job_status=#{jobStatus}, executor_id=#{executorInfo.id} where id=#{id}")
     void update(JobInfo jobInfo);
 
     //TODO
@@ -55,7 +55,9 @@ public interface JobInfoMapper {
             @Result(property = "jobFilePath", column = "job_filepath"),
             @Result(property = "jobFileType", column = "job_filetype"),
             @Result(property = "addTime", column = "add_time", jdbcType = JdbcType.DATE),
-            @Result(property = "jobStatus",column = "job_status")
+            @Result(property = "updatetime", column = "update_time", jdbcType = JdbcType.DATE),
+            @Result(property = "jobStatus",column = "job_status"),
+            @Result(property = "executorInfo", column = "executor_id", one = @One(select = "gtja.taskframework.entity.ExecutorInfo.ExecutorMapper.findExecutorById"))
     })
     List<JobInfo> selectAll();
 

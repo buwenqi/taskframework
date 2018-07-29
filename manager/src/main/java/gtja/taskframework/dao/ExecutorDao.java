@@ -1,0 +1,23 @@
+package gtja.taskframework.dao;
+
+import gtja.taskframework.entity.ExecutorInfo;
+import gtja.taskframework.mapper.ExecutorMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class ExecutorDao {
+
+    @Autowired
+    ExecutorMapper executorMapper;
+
+    public List<ExecutorInfo> listAllExecutor(){ return executorMapper.selectAll(); }
+
+    public void saveExecutor(ExecutorInfo executorInfo){ executorMapper.insert(executorInfo); }
+
+    public void updateExecutor(ExecutorInfo executorInfo){ executorMapper.update(executorInfo); }
+
+    public void deleteExecutor(long id){ executorMapper.delete(id);}
+}
