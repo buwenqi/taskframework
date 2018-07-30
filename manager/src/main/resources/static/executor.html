@@ -268,9 +268,9 @@
                 title: '状态',
                 formatter: function(value, row, index){
                     if(row['status']==0)
-                        return '离线';
+                        return '<p class="text-danger">离线</p>';
                     if(row['status']==1)
-                        return '在线';
+                        return '<p class="text-success">在线</p>';
                     return value;
                 }
             },{
@@ -282,7 +282,7 @@
                 align: 'center',
                 formatter: function(value, row, index){
 
-                    return '<button id="register" class="btn btn-xs btn-info" onclick="register('+row.id+')" style="margin-left:8px">注册</a> '
+                    return '<button id="test" class="btn btn-xs btn-info" onclick="test('+row.id+')" style="margin-left:8px">测试</a> '
                     + '<button type="button" id="editExecutor" class="btn btn-xs btn-success"  onclick="editExecutor('+row.id+')" style="margin-left:10px">编辑</a>'
                     + '<button type="button" id="deleteExecutor" class="btn btn-xs btn-warning" onclick="deleteById('+row.id+')" style="margin-left:10px">删除</a>';
                 }
@@ -359,11 +359,11 @@
             });
         }
 
-        function register(id){
+        function test(id){
 
             var row = $('#table').bootstrapTable('getRowByUniqueId', id);
             $.ajax({
-                url:"/executor/auto_register",
+                url:"/executor/heartbeat",
                 method: "post",
                 data: {
                     "id": row.id,
@@ -375,7 +375,10 @@
                 },
                 dataType:"text",
                 success:function(data){
-                    if(data=="success"){
+
+                    if(data=="online"){
+                        $('#table').bootstrapTable('refresh','/executor/list_executor');
+                    }else{
                         $('#table').bootstrapTable('refresh','/executor/list_executor');
                     }
                 }

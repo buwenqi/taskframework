@@ -1,5 +1,7 @@
 package gtja.taskframework.interceptor;
 
+import org.apache.commons.io.IOUtils;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -7,8 +9,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import static com.mchange.v2.ser.SerializableUtils.toByteArray;
 
 /**
  * Created by wenqi on 2018/7/27.
@@ -23,7 +23,7 @@ public class CustomServletRequestWrapper extends HttpServletRequestWrapper {
      */
     public CustomServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        body = toByteArray(super.getInputStream());
+        body = IOUtils.toByteArray(super.getInputStream());
     }
     @Override
     public BufferedReader getReader() throws IOException {

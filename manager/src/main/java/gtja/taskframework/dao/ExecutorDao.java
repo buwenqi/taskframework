@@ -13,11 +13,23 @@ public class ExecutorDao {
     @Autowired
     ExecutorMapper executorMapper;
 
-    public List<ExecutorInfo> listAllExecutor(){ return executorMapper.selectAll(); }
+    public List<ExecutorInfo> listAllExecutor() {
+        return executorMapper.selectAll();
+    }
 
-    public void saveExecutor(ExecutorInfo executorInfo){ executorMapper.insert(executorInfo); }
+    public ExecutorInfo findExecutorByIpAndPort(String ip, Integer port) {
+        return executorMapper.findExecutorByIpAndPort(ip, port);
+    }
 
-    public void updateExecutor(ExecutorInfo executorInfo){ executorMapper.update(executorInfo); }
+    public void saveExecutor(ExecutorInfo executorInfo) {
+        executorMapper.insert(executorInfo);
+    }
 
-    public void deleteExecutor(long id){ executorMapper.delete(id);}
+    public void updateExecutor(ExecutorInfo executorInfo) {
+        executorMapper.update(executorInfo);
+    }
+
+    public void deleteExecutor(long id) {
+        executorMapper.delete(id);
+    }
 }

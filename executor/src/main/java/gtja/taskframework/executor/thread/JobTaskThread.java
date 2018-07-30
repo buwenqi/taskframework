@@ -36,6 +36,7 @@ public class JobTaskThread implements Runnable {
                 usingJobData("jobFilePath",jobInfo.getJobFilePath()).
                 usingJobData("jobName",jobInfo.getJobName()).
                 usingJobData("jobGroup",jobInfo.getJobGroup()).
+                usingJobData("email",jobInfo.getEmail()).
                 withIdentity(jobInfo.getJobName(),jobInfo.getJobGroup()).build();
 
         //触发器

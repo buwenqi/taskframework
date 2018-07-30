@@ -9,7 +9,7 @@ public class ExecutorInfo {
 
     private String ipAddress;
 
-    private int port;
+    private Integer port;
 
     private String username;
 
@@ -38,11 +38,11 @@ public class ExecutorInfo {
         this.ipAddress = ipAddress;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 

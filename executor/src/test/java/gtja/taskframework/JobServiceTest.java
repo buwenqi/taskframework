@@ -27,10 +27,11 @@ public class JobServiceTest {
         jobInfo=new JobInfo();
         jobInfo.setJobName("jobtest3");
         jobInfo.setJobGroup("jobtestGroup3");
-        jobInfo.setJobCron("1/3 * * * * ?");
+        jobInfo.setJobCron("1/10 * * * * ?");
         jobInfo.setJobFilePath("D:\\code\\hello.py");
         jobInfo.setJobDesc("python job");
         jobInfo.setJobFileType("python");
+        jobInfo.setEmail("wqbu@qq.com");
         System.out.println("jobInfo初始化完成！");
     }
 

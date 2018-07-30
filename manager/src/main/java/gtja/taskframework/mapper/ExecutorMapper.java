@@ -18,6 +18,12 @@ public interface ExecutorMapper {
     })
     ExecutorInfo findExecutorById(long id);
 
+    @Select("select * from self_executor where ip_address=#{ip} and port=#{port}")
+    @Results({
+            @Result(property = "ipAddress", column = "ip_address")
+    })
+    ExecutorInfo findExecutorByIpAndPort(@Param("ip") String ip,@Param("port") Integer port);
+
     @Select("select * from self_executor")
     @Results({
             @Result(property = "ipAddress", column = "ip_address")

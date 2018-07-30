@@ -36,19 +36,22 @@ public class ExecutorController {
      * @return
      */
     @PostMapping("/auto_register")
-    public String autoRegister( ExecutorInfo executorInfo) {
+    public String autoRegister(@RequestBody ExecutorInfo executorInfo) {
         //设置executor的状态为连接状态，并插入数据库,如果出现异常应该返回ReturnStatusEnum.Fail
 
-        if (executorInfo != null&&!StringUtils.isEmpty(executorInfo.getIpAddress())) {
+        if (executorInfo != null&&!StringUtils.isEmpty(executorInfo.getIpAddress())&&!StringUtils.isEmpty(executorInfo.getPort())) {
             //将这个executor信息写入数据库
-            executorInfo.setStatus(1);
-            executorDao.updateExecutor(executorInfo);
+
+            //System.out.println(executorInfo.getUsername()+":"+executorInfo.getPassword());
+            //检查数据库中是否存在
+            if(executorDao.findExecutorByIpAndPort(executorInfo.getIpAddress(),executorInfo.getPort())==null) {
+                executorInfo.setStatus(1);
+                executorDao.saveExecutor(executorInfo);
+            }
             return ReturnStatusEnum.SUCCESS.val();
         }else{
             return ReturnStatusEnum.FAILED.val();
         }
-
-        //返回成功结果
 
     }
 
@@ -58,12 +61,15 @@ public class ExecutorController {
         ResponseEntity<String> responseEntity=restTemplate.getForEntity(baseUrl,String.class);
         if(responseEntity.getStatusCode()==HttpStatus.OK&&ExecutorStatus.ONLINE.val().equals(responseEntity.getBody())){
             //更新数据库
-
+            //设置在线
+            executorInfo.setStatus(1);
+            executorDao.updateExecutor(executorInfo);
             //返回成功
             return ExecutorStatus.ONLINE.val();
         }else{
             //更新数据库
-
+            executorInfo.setStatus(0);
+            executorDao.updateExecutor(executorInfo);
             //返回失败
             return ExecutorStatus.OFFLINE.val();
         }

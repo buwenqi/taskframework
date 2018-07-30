@@ -6,6 +6,7 @@ import gtja.taskframework.util.ReturnStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -35,6 +36,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
     private RestTemplate restTemplate;
 
     @Autowired
+    @Qualifier("threadPool")
     private ThreadPoolExecutor threadPoolExecutor;
 
     private static Logger logger=LoggerFactory.getLogger(ApplicationRunnerImpl.class);
@@ -51,7 +53,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
                     ReturnStatusEnum.SUCCESS.val().equals(responseEntity.getBody())) {
                 logger.info(executorInfo.getIpAddress() + ":executor注册成功");
             } else {
-                logger.info(executorInfo.getIpAddress() + ":executor注册成功");
+                logger.info(executorInfo.getIpAddress() + ":executor注册失败");
             }
         });
     }
