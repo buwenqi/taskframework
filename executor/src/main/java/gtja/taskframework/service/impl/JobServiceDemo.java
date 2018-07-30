@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 /**
  * Created by wenqi on 2018/7/17.
  */
-@Service
 public class JobServiceDemo {
     private Logger logger=LoggerFactory.getLogger(JobServiceDemo.class);
 

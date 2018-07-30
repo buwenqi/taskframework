@@ -56,8 +56,8 @@ public class ExecutorController {
     }
 
     @PostMapping("/heartbeat")
-    public String heartBeat(@RequestBody ExecutorInfo executorInfo){
-        String baseUrl="http://"+executorInfo.getIpAddress()+":"+executorInfo.getPort()+"/executor/heartbeat";
+    public String heartBeat(@RequestBody  ExecutorInfo executorInfo){
+        String baseUrl="http://"+executorInfo.getIpAddress()+":"+executorInfo.getPort()+"/status/heartbeat";
         ResponseEntity<String> responseEntity=restTemplate.getForEntity(baseUrl,String.class);
         if(responseEntity.getStatusCode()==HttpStatus.OK&&ExecutorStatus.ONLINE.val().equals(responseEntity.getBody())){
             //更新数据库

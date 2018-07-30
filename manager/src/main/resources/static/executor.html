@@ -362,17 +362,19 @@
         function test(id){
 
             var row = $('#table').bootstrapTable('getRowByUniqueId', id);
+            var jsonstr="{\"id\":\""+row.id+
+                    "\",\"ipAddress\":\""+row.ipAddress+
+                    "\",\"port\":\""+row.port+
+                    "\",\"username\":\""+row.username+
+                    "\",\"password\":\""+row.password+
+                    "\",\"description\":\""+row.description+"\"}";
+             alert(jsonstr);
             $.ajax({
                 url:"/executor/heartbeat",
                 method: "post",
-                data: {
-                    "id": row.id,
-                    "ipAddress": row.ipAddress,
-                    "port": row.port,
-                    "username": row.username,
-                    "password": row.password,
-                    "description": row.description
-                },
+                dataType: "text",
+                contentType: "application/json",
+                data: jsonstr,
                 dataType:"text",
                 success:function(data){
 
