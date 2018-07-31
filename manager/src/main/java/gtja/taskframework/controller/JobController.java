@@ -1,14 +1,20 @@
 package gtja.taskframework.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import gtja.taskframework.dao.ExecutorDao;
 import gtja.taskframework.dao.JobInfoDao;
 import gtja.taskframework.entity.ExecutorInfo;
 import gtja.taskframework.entity.JobInfo;
+import gtja.taskframework.util.JobStatusEnum;
+import gtja.taskframework.util.ReturnStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -28,6 +34,13 @@ public class JobController {
 
     @Autowired
     JobInfoDao jobInfoDao;
+
+    @Autowired
+    ExecutorDao executorDao;
+
+    @Autowired
+    RestTemplate restTemplate;
+
 
     @RequestMapping("/jobInfo")
     public String getJobInfo(@RequestParam int pageNumber,int pageSize,HttpServletResponse response){
@@ -58,15 +71,34 @@ public class JobController {
     public String addJob(JobInfo jobInfo) {
         //1.插入本地数据库
         if(jobInfo!=null) {
-            System.out.println(jobInfo.toString());
             jobInfo.setAddTime(new Date());
             jobInfo.setJobStatus(1);
             jobInfoDao.saveJobInfo(jobInfo);
-        }
-        JSONObject result = new JSONObject();
-        result.put("state", "success");
+            //找到对应的executor信息
+            ExecutorInfo executorInfo=executorDao.findExecutorById(jobInfo.getExecutorInfo().getId());
+            jobInfo.setExecutorInfo(executorInfo);
+            //找到executor信息后组合请求格式
+            String baseUrl="http://"+executorInfo.getIpAddress()+":"+executorInfo.getPort();
+            String requestUrl=baseUrl+"/executor/addJob";
+            //用restTemplate请求executor服务
+            ResponseEntity<String> responseEntity=restTemplate.postForEntity(requestUrl,jobInfo,String.class);
+            //请求完成后判断是否请求成功
+            if(responseEntity.getStatusCode()==HttpStatus.OK){
+                //请求成功后，获取body中的信息
+                JSONObject jsonObject=JSON.parseObject(responseEntity.getBody());
+                String jobStatus=jsonObject.getString("jobStatus");
+                //检查是不是成功状态
+                if(JobStatusEnum.RUNNING.val().equals(jobStatus)){
+                    JSONObject result = new JSONObject();
+                    result.put("state", ReturnStatusEnum.SUCCESS.val());
+                    return result.toJSONString();
+                }
+            }
 
-        //2.提交给远程executor执行任务
+        }
+        //其他情况返回失败
+        JSONObject result = new JSONObject();
+        result.put("state", ReturnStatusEnum.FAILED.val());
         return result.toJSONString();
     }
 
@@ -84,6 +116,7 @@ public class JobController {
         jobInfo.setAddTime(new Date());
         jobInfo.setJobStatus(1);
         jobInfoDao.updateJobInfo(jobInfo);
+
         JSONObject result = new JSONObject();
         result.put("state", "success");
 

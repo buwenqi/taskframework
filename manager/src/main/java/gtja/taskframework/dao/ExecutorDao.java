@@ -17,6 +17,12 @@ public class ExecutorDao {
         return executorMapper.selectAll();
     }
 
+    public ExecutorInfo findExecutorById(long id) {
+        return executorMapper.findExecutorById(id);
+    }
+
+    ;
+
     public ExecutorInfo findExecutorByIpAndPort(String ip, Integer port) {
         return executorMapper.findExecutorByIpAndPort(ip, port);
     }

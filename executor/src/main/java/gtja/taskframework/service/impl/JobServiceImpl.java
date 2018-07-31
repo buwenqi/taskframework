@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  * Created by wenqi on 2018/7/18.
  * JobService的Provider
  */
-@Service(interfaceClass = JobService.class, retries=0,timeout = 3000)
+//@Service(interfaceClass = JobService.class, retries=0,timeout = 3000)
 @Component
 public class JobServiceImpl implements JobService{
 

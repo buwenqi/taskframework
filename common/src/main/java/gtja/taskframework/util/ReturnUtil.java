@@ -5,7 +5,7 @@ package gtja.taskframework.util;
  */
 public class ReturnUtil {
     public static String returnMsg(ReturnStatusEnum returnStatus,JobStatusEnum jobStatus,String msg){
-        return String.format("{returnStatus:%s,jobStatus:%s,msg:%s}",returnStatus.val(),jobStatus.val(),msg);
+        return String.format("{\"returnStatus\":\"%s\",\"jobStatus\":\"%s\",\"msg\":\"%s\"}",returnStatus.val(),jobStatus.val(),msg);
     }
 
     public static String returnMsg(ReturnStatusEnum returnStatus,JobStatusEnum jobStatus){
