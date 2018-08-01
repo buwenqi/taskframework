@@ -9,6 +9,7 @@ import gtja.taskframework.dao.JobInfoDao;
 import gtja.taskframework.entity.ExecutorInfo;
 import gtja.taskframework.entity.JobInfo;
 import gtja.taskframework.util.JobStatusEnum;
+import gtja.taskframework.util.RestTemplateUtil;
 import gtja.taskframework.util.ReturnStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,6 @@ public class JobController {
         JSONObject result = new JSONObject();
         result.put("total", total);
         result.put("rows", jobInfo);
-        System.out.println(result.toJSONString());
         return result.toJSONString();
     }
 
@@ -71,9 +71,7 @@ public class JobController {
     public String addJob(JobInfo jobInfo) {
         //1.插入本地数据库
         if(jobInfo!=null) {
-            jobInfo.setAddTime(new Date());
-            jobInfo.setJobStatus(1);
-            jobInfoDao.saveJobInfo(jobInfo);
+
             //找到对应的executor信息
             ExecutorInfo executorInfo=executorDao.findExecutorById(jobInfo.getExecutorInfo().getId());
             jobInfo.setExecutorInfo(executorInfo);
@@ -81,7 +79,11 @@ public class JobController {
             String baseUrl="http://"+executorInfo.getIpAddress()+":"+executorInfo.getPort();
             String requestUrl=baseUrl+"/executor/addJob";
             //用restTemplate请求executor服务
-            ResponseEntity<String> responseEntity=restTemplate.postForEntity(requestUrl,jobInfo,String.class);
+            ResponseEntity<String> responseEntity=null;
+            responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
+            if(responseEntity==null){
+                return ReturnStatusEnum.FAILED.val();
+            }
             //请求完成后判断是否请求成功
             if(responseEntity.getStatusCode()==HttpStatus.OK){
                 //请求成功后，获取body中的信息
@@ -89,57 +91,144 @@ public class JobController {
                 String jobStatus=jsonObject.getString("jobStatus");
                 //检查是不是成功状态
                 if(JobStatusEnum.RUNNING.val().equals(jobStatus)){
-                    JSONObject result = new JSONObject();
-                    result.put("state", ReturnStatusEnum.SUCCESS.val());
-                    return result.toJSONString();
+                    jobInfo.setAddTime(new Date());
+                    jobInfo.setJobStatus(0);
+                    jobInfoDao.saveJobInfo(jobInfo);
+                    return ReturnStatusEnum.SUCCESS.val();
                 }
             }
 
         }
         //其他情况返回失败
-        JSONObject result = new JSONObject();
-        result.put("state", ReturnStatusEnum.FAILED.val());
-        return result.toJSONString();
+        return ReturnStatusEnum.FAILED.val();
     }
 
     @RequestMapping("/deleteJob")
     public String deleteJob(long id){
-        jobInfoDao.deleteJob(id);
-        JSONObject result = new JSONObject();
-        result.put("state", "success");
-        return result.toJSONString();
+
+        JobInfo jobInfo = jobInfoDao.findJobById(id);
+        if (jobInfo!=null){
+            String baseUrl="http://"+jobInfo.getExecutorInfo().getIpAddress()+":"+jobInfo.getExecutorInfo().getPort();
+            String requestUrl=baseUrl+"/executor/removeJob";
+            ResponseEntity<String> responseEntity=null;
+            responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
+            if(responseEntity==null){
+                return ReturnStatusEnum.FAILED.val();
+            }
+            if(responseEntity.getStatusCode()==HttpStatus.OK){
+                JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
+                String jobStatus = jsonObject.getString("jobStatus");
+                if(JobStatusEnum.REMOVED.val().equals(jobStatus)){
+                    jobInfoDao.deleteJob(id);
+                    return ReturnStatusEnum.SUCCESS.val();
+                }
+            }
+        }
+
+        return ReturnStatusEnum.FAILED.val();
     }
 
     @RequestMapping("/updateJob")
     public String updateJob(JobInfo jobInfo) {
         //1.插入本地数据库
-        jobInfo.setAddTime(new Date());
-        jobInfo.setJobStatus(1);
-        jobInfoDao.updateJobInfo(jobInfo);
+        if(jobInfo!=null){
+            ExecutorInfo executorInfo = executorDao.findExecutorById(jobInfo.getExecutorInfo().getId());
+            jobInfo.setExecutorInfo(executorInfo);
+            String baseUrl="http://"+executorInfo.getIpAddress()+":"+executorInfo.getPort();
+            String requestUrl=baseUrl+"/executor/updateJob";
+            ResponseEntity<String> responseEntity=null;
+            responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
+            if(responseEntity==null){
+                return ReturnStatusEnum.FAILED.val();
+            }
+            if(responseEntity.getStatusCode()==HttpStatus.OK){
+                JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
+                String jobStatus = jsonObject.getString("jobStatus");
+                if(JobStatusEnum.UPDATED.val().equals(jobStatus)){
+                    jobInfo.setUpdateTime(new Date());
+                    jobInfo.setJobStatus(0);
+                    jobInfoDao.updateJobInfo(jobInfo);
+                    return ReturnStatusEnum.SUCCESS.val();
+                }
+            }
+        }
 
-        JSONObject result = new JSONObject();
-        result.put("state", "success");
-
-        //2.提交给远程executor执行任务
-        return result.toJSONString();
+        return ReturnStatusEnum.FAILED.val();
     }
 
     @RequestMapping("/pauseJob")
     public String pauseJob(long id){
-        int jobStatus = 2;
-        jobInfoDao.jobStatus(id, jobStatus);
-        JSONObject result = new JSONObject();
-        result.put("state", "success");
-        return result.toJSONString();
+
+        JobInfo jobInfo = jobInfoDao.findJobById(id);
+        if (jobInfo!=null){
+            String baseUrl="http://"+jobInfo.getExecutorInfo().getIpAddress()+":"+jobInfo.getExecutorInfo().getPort();
+            String requestUrl=baseUrl+"/executor/pauseJob";
+            ResponseEntity<String> responseEntity=null;
+            responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
+            if(responseEntity==null){
+                return ReturnStatusEnum.FAILED.val();
+            }
+            if(responseEntity.getStatusCode()==HttpStatus.OK){
+                JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
+                String jobStatus = jsonObject.getString("jobStatus");
+
+                if(JobStatusEnum.PAUSED.val().equals(jobStatus)){
+                    int jobStatu = 2;
+                    jobInfoDao.jobStatus(id, jobStatu);
+                    return ReturnStatusEnum.SUCCESS.val();
+                }
+            }
+        }
+        return ReturnStatusEnum.FAILED.val();
+
     }
 
     @RequestMapping("/resumeJob")
     public String resumeJob(long id){
-        int jobStatus = 0;
-        jobInfoDao.jobStatus(id, jobStatus);
-        JSONObject result = new JSONObject();
-        result.put("state", "success");
-        return result.toJSONString();
+
+        JobInfo jobInfo = jobInfoDao.findJobById(id);
+        if (jobInfo!=null){
+            String baseUrl="http://"+jobInfo.getExecutorInfo().getIpAddress()+":"+jobInfo.getExecutorInfo().getPort();
+            String requestUrl=baseUrl+"/executor/resumeJob";
+            ResponseEntity<String> responseEntity=null;
+            responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
+            if(responseEntity==null){
+                return ReturnStatusEnum.FAILED.val();
+            }
+            if(responseEntity.getStatusCode()==HttpStatus.OK){
+                JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
+                String jobStatus = jsonObject.getString("jobStatus");
+                if(JobStatusEnum.RUNNING.val().equals(jobStatus)){
+                    int jobStatu = 0;
+                    jobInfoDao.jobStatus(id, jobStatu);
+                    return ReturnStatusEnum.SUCCESS.val();
+                }
+            }
+        }
+        return ReturnStatusEnum.FAILED.val();
     }
+
+    @RequestMapping("/triggerJob")
+    public String triggerJob(long id){
+        JobInfo jobInfo = jobInfoDao.findJobById(id);
+        if (jobInfo!=null){
+            String baseUrl="http://"+jobInfo.getExecutorInfo().getIpAddress()+":"+jobInfo.getExecutorInfo().getPort();
+            String requestUrl=baseUrl+"/executor/triggerJob";
+            ResponseEntity<String> responseEntity=null;
+            responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
+            if(responseEntity==null){
+                return ReturnStatusEnum.FAILED.val();
+            }
+            if(responseEntity.getStatusCode()==HttpStatus.OK){
+                JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
+                String jobStatus = jsonObject.getString("jobStatus");
+                if(JobStatusEnum.TRIGGERED.val().equals(jobStatus)){
+                    return ReturnStatusEnum.SUCCESS.val();
+                }
+            }
+        }
+        return ReturnStatusEnum.FAILED.val();
+    }
+
 
 }

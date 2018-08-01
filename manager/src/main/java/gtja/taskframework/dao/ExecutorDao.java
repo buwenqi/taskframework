@@ -21,8 +21,6 @@ public class ExecutorDao {
         return executorMapper.findExecutorById(id);
     }
 
-    ;
-
     public ExecutorInfo findExecutorByIpAndPort(String ip, Integer port) {
         return executorMapper.findExecutorByIpAndPort(ip, port);
     }
@@ -38,4 +36,6 @@ public class ExecutorDao {
     public void deleteExecutor(long id) {
         executorMapper.delete(id);
     }
+
+    public List<ExecutorInfo> findOnlineExecutor() {return executorMapper.selectOnlineExecutor(); }
 }

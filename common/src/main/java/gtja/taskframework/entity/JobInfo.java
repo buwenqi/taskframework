@@ -34,8 +34,9 @@ public class JobInfo implements Serializable {
     private String jobFileType;
 
     //附加信息
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date addTime;
-
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     private String author;

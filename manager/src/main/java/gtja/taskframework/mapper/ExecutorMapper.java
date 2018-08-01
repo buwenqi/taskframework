@@ -41,4 +41,10 @@ public interface ExecutorMapper {
 
     @Delete("delete from self_executor where id=#{id}")
     void delete(long id);
+
+    @Select("select * from self_executor where status=1")
+    @Results({
+            @Result(property = "ipAddress", column = "ip_address")
+    })
+    List<ExecutorInfo> selectOnlineExecutor();
 }

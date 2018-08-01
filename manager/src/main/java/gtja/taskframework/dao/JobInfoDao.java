@@ -42,4 +42,6 @@ public class JobInfoDao {
     }
 
     public void jobStatus( long id,  int jobStatus) {jobInfoMapper.updateJobStatus(id, jobStatus);}
+
+    public JobInfo findJobById(long id){ return  jobInfoMapper.selectByJobId(id); }
 }

@@ -7,11 +7,10 @@
     <meta name="author" content="ThemeBucket">
     <link rel="shortcut icon" href="#" type="image/png">
 
-    <title>Blank Page</title>
+    <title>Task Manager</title>
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/fileinput.css" >
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
     <script src="js/html5shiv.js"></script>
@@ -50,7 +49,7 @@
             <!-- visible to small devices only -->
             <!--sidebar nav start-->
             <ul class="nav nav-pills nav-stacked custom-nav">
-                <li><a href="job.html"><i class="fa fa-laptop"></i><span>任务管理</span></a> </li>
+                <li><a href="index.html"><i class="fa fa-laptop"></i><span>任务管理</span></a> </li>
                 <li><a href="executor.html"><i class="fa fa-laptop"></i> <span>执行器管理</span></a></li>
 
             </ul>
@@ -69,14 +68,6 @@
             <!--toggle button start-->
             <a class="toggle-btn"><i class="fa fa-bars"></i></a>
             <!--toggle button end-->
-
-            <!--search start-->
-            <form class="searchform" action="index.html" method="post">
-                <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
-            </form>
-            <!--search end-->
-
-
         </div>
         <!-- header section end-->
 
@@ -158,7 +149,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="addBtn" class="btn btn-default" onclick="addExecutor()">确定</button>
-                <a href="#" class="btn" data-dismiss="modal">取消</a>
+                <button type="button" id="reset" class="btn" data-dismiss="modal" onclick="resetAddModal()">取消</button>
             </div>
         </div>
     </div>
@@ -290,20 +281,28 @@
 
         });
 
+        function resetAddModal(){
+		    document.getElementById("addExecutorForm").reset();
+	    }
+
         function addExecutor(){
             var param = $("#addExecutorForm").serializeArray();
-            debugger;
-            $("#addBtn").attr("onclick", "addExecutor");
+
             $.ajax({
                 url:"/executor/add_executor",
                 method: "post",
                 data:param,
-                dataType:"json",
+                dataType:"text",
                 success:function(data){
-                    if(data.state=="success"){
+                    if(data=="success"){
                         alert("添加成功");
                         $('#addExecutorModal').modal('hide');
+                        document.getElementById("addExecutorForm").reset();
                         $('#table').bootstrapTable('refresh','/executor/list_executor');
+                    }else{
+                        alert("添加失败");
+                        $('#addExecutorModal').modal('hide');
+                        document.getElementById("addExecutorForm").reset();
                     }
                 }
             });
@@ -313,13 +312,13 @@
             $("#deleteExecutor").attr("onclick", "deleteById");
             $.ajax({
                 url:"/executor/remove_executor",
-                dataType:"json",
+                dataType:"text",
                 method:"post",
                 data:{
                     "id":id
                 },
                 success:function(data){
-                    if(data.state=="success"){
+                    if(data=="success"){
                         document.getElementById('tipContent').innerText='删除成功！';
                         $('#tip').modal('show');
                         $('#table').bootstrapTable('refresh','/executor/list_executor');
@@ -346,14 +345,17 @@
 
             $.ajax({
                 url:"/executor/update_executor",
-                method: "post",
+                method: "text",
                 data:param,
                 dataType:"json",
                 success:function(data){
-                    if(data.state=="success"){
+                    if(data=="success"){
                         alert("修改成功");
                         $('#editExecutorModal').modal('hide');
                         $('#table').bootstrapTable('refresh','/executor/list_executor');
+                    }else{
+                        alert("修改失败");
+                        $('#editExecutorModal').modal('hide');
                     }
                 }
             });
@@ -368,7 +370,7 @@
                     "\",\"username\":\""+row.username+
                     "\",\"password\":\""+row.password+
                     "\",\"description\":\""+row.description+"\"}";
-             alert(jsonstr);
+
             $.ajax({
                 url:"/executor/heartbeat",
                 method: "post",
@@ -395,10 +397,6 @@
 
 <script src="js/modernizr.min.js"></script>
 <script src="js/jquery.nicescroll.js"></script>
-
-<script src="js/fileinput.js"></script>
-<script src="js/fileinput_locale_zh.js">
-
 
 <script src="js/scripts.js"></script>
 
