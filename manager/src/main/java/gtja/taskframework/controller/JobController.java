@@ -82,7 +82,7 @@ public class JobController {
             ResponseEntity<String> responseEntity=null;
             responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
             if(responseEntity==null){
-                return ReturnStatusEnum.FAILED.val();
+                return ReturnStatusEnum.OFFLINE.val();
             }
             //请求完成后判断是否请求成功
             if(responseEntity.getStatusCode()==HttpStatus.OK){
@@ -113,7 +113,7 @@ public class JobController {
             ResponseEntity<String> responseEntity=null;
             responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
             if(responseEntity==null){
-                return ReturnStatusEnum.FAILED.val();
+                return ReturnStatusEnum.OFFLINE.val();
             }
             if(responseEntity.getStatusCode()==HttpStatus.OK){
                 JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
@@ -139,7 +139,7 @@ public class JobController {
             ResponseEntity<String> responseEntity=null;
             responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
             if(responseEntity==null){
-                return ReturnStatusEnum.FAILED.val();
+                return ReturnStatusEnum.OFFLINE.val();
             }
             if(responseEntity.getStatusCode()==HttpStatus.OK){
                 JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
@@ -166,7 +166,7 @@ public class JobController {
             ResponseEntity<String> responseEntity=null;
             responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
             if(responseEntity==null){
-                return ReturnStatusEnum.FAILED.val();
+                return ReturnStatusEnum.OFFLINE.val();
             }
             if(responseEntity.getStatusCode()==HttpStatus.OK){
                 JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
@@ -193,7 +193,7 @@ public class JobController {
             ResponseEntity<String> responseEntity=null;
             responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
             if(responseEntity==null){
-                return ReturnStatusEnum.FAILED.val();
+                return ReturnStatusEnum.OFFLINE.val();
             }
             if(responseEntity.getStatusCode()==HttpStatus.OK){
                 JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());
@@ -217,7 +217,7 @@ public class JobController {
             ResponseEntity<String> responseEntity=null;
             responseEntity = RestTemplateUtil.postForEntity(restTemplate, requestUrl, jobInfo, String.class);
             if(responseEntity==null){
-                return ReturnStatusEnum.FAILED.val();
+                return ReturnStatusEnum.OFFLINE.val();
             }
             if(responseEntity.getStatusCode()==HttpStatus.OK){
                 JSONObject jsonObject = JSON.parseObject(responseEntity.getBody());

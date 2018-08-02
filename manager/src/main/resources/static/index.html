@@ -455,10 +455,14 @@
                         document.getElementById("addJobForm").reset();
                         alert("添加成功");
                         $('#table').bootstrapTable('refresh','/job/jobInfo');
-                    }else{
+                    }else if(data=="failed"){
                         $('#addJobModal').modal('hide');
                         document.getElementById("addJobForm").reset();
                         alert("添加失败");
+                    }else{
+                        $('#addJobModal').modal('hide');
+                        document.getElementById("addJobForm").reset();
+                        alert("执行器已离线！请更换执行器。");
                     }
                 }
             });
@@ -477,8 +481,10 @@
                     if(data=="success"){
                         alert("删除成功");
                         $('#table').bootstrapTable('refresh','/job/jobInfo');
-                    }else{
+                    }else if(data=="failed"){
                         alert("删除失败");
+                    }else{
+                        alert("执行器已离线！请更换执行器。");
                     }
                 }
             });
@@ -513,8 +519,11 @@
                         alert("更新成功");
                         $('#editJobModal').modal('hide');
                         $('#table').bootstrapTable('refresh','/job/jobInfo');
-                    }else{
+                    }else if(data=="failed"){
                         alert("更新失败");
+                        $('#editJobModal').modal('hide');
+                    }else{
+                        alert("执行器已离线！请更换执行器。");
                         $('#editJobModal').modal('hide');
                     }
                 }
@@ -533,8 +542,11 @@
                         document.getElementById('tipContent').innerText="任务暂停！";
                         $('#tip').modal('show');
                         $('#table').bootstrapTable('refresh', '/job/jobInfo');
-                    }else{
+                    }else if(data=="failed"){
                         document.getElementById('tipContent').innerText="任务暂停失败！";
+                        $('#tip').modal('show');
+                    }else{
+                        document.getElementById('tipContent').innerText="执行器已离线！请更换执行器";
                         $('#tip').modal('show');
                     }
                 }
@@ -553,8 +565,11 @@
                         document.getElementById('tipContent').innerText="任务执行！";
                         $('#tip').modal('show');
                         $('#table').bootstrapTable('refresh', '/job/jobInfo');
-                    }else{
+                    }else if(data=="failed"){
                         document.getElementById('tipContent').innerText="任务执行失败！";
+                        $('#tip').modal('show');
+                    }else{
+                        document.getElementById('tipContent').innerText="执行器已离线！请更换执行器！";
                         $('#tip').modal('show');
                     }
                 }
@@ -573,8 +588,11 @@
                         document.getElementById('tipContent').innerText="任务触发成功！";
                         $('#tip').modal('show');
                         $('#table').bootstrapTable('refresh', '/job/jobInfo');
-                    }else{
+                    }else if(data=="failed"){
                         document.getElementById('tipContent').innerText="任务触发失败！";
+                        $('#tip').modal('show');
+                    }else{
+                        document.getElementById('tipContent').innerText="执行器已离线！请更换执行器！";
                         $('#tip').modal('show');
                     }
                 }
