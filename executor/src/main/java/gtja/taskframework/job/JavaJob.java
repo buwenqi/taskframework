@@ -19,7 +19,7 @@ import java.io.IOException;
  * 用于定义java文件的job
  */
 public class JavaJob implements Job {
-    private Logger logger=LoggerFactory.getLogger(JavaJob.class);
+    private static Logger logger=LoggerFactory.getLogger(JavaJob.class);
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
@@ -28,7 +28,7 @@ public class JavaJob implements Job {
         JobDataMap jobDataMap=jobExecutionContext.getJobDetail().getJobDataMap();
         String jobFilePath=jobDataMap.getString("jobFilePath");
 
-        //动态加载要执行的文件
+        //动态加载要执行的文件，动态加载
         try {
             File file = new File(jobFilePath);
             GroovyClassLoader groovyClassLoader = new GroovyClassLoader();

@@ -15,14 +15,14 @@ import java.util.List;
 @Component
 public interface JobInfoMapper {
 
-    @Insert("insert into self_jobinfo(job_name,job_group,job_cron,job_desc,job_filepath,job_filetype,add_time,author,email,job_status)" +
-            "values(#{jobName},#{jobGroup},#{jobCron},#{jobDesc},#{jobFilePath},#{jobFileType},#{addTime},#{author},#{email},#{jobStatus})")
+    @Insert("insert into self_jobinfo(job_name,job_group,job_cron,job_desc,job_filepath,job_filetype,add_time,update_time,author,email,job_status,exector_id)" +
+            "values(#{jobName},#{jobGroup},#{jobCron},#{jobDesc},#{jobFilePath},#{jobFileType},#{addTime},#{updateTime},#{author},#{email},#{jobStatus},#{executorInfo.id})")
     @Options(useGeneratedKeys = true, keyColumn = "id",keyProperty = "id")
     void insert(JobInfo jobInfo);
 
-    @Update("update self_jobinfo set job_name=#{jobName},job_group=#{jobGroup},job_cron=#{jonCron},job_desc=#{jobDesc}," +
-            "job_filepath=#{jobFilePath},job_filetype=#{jobFileType},add_time=#{addTime},author=#{author},email=#{email}," +
-            "job_status=#{jobStatus} where id=#{id}")
+    @Update("update self_jobinfo set job_name=#{jobName},job_group=#{jobGroup},job_cron=#{jobCron},job_desc=#{jobDesc}," +
+            "job_filepath=#{jobFilePath},job_filetype=#{jobFileType},add_time=#{addTime},update_time=#{updateTime},author=#{author},email=#{email}," +
+            "job_status=#{jobStatus}, exector_id=#{executorInfo.id} where id=#{id}")
     void update(JobInfo jobInfo);
 
     @Delete("delete from self_jobinfo where id=#{id}")
@@ -37,7 +37,9 @@ public interface JobInfoMapper {
             @Result(property = "jobFilePath", column = "job_filepath"),
             @Result(property = "jobFileType", column = "job_filetype"),
             @Result(property = "addTime", column = "add_time", jdbcType = JdbcType.DATE),
-            @Result(property = "jobStatus",column = "job_status")
+            @Result(property = "updatetime", column = "update_time", jdbcType = JdbcType.DATE),
+            @Result(property = "jobStatus",column = "job_status"),
+            @Result(property = "executorInfo",column="exector_id",one = @One(select = "gtja.taskframework.mapper.ExecutorMapper.findExecutorById"))
     })
     JobInfo selectByJobName(String jobName);
 
@@ -50,8 +52,27 @@ public interface JobInfoMapper {
             @Result(property = "jobFilePath", column = "job_filepath"),
             @Result(property = "jobFileType", column = "job_filetype"),
             @Result(property = "addTime", column = "add_time", jdbcType = JdbcType.DATE),
-            @Result(property = "jobStatus",column = "job_status")
+            @Result(property = "updateTime", column = "update_time", jdbcType = JdbcType.DATE),
+            @Result(property = "jobStatus",column = "job_status"),
+            @Result(property = "executorInfo", column = "executor_id", one = @One(select = "gtja.taskframework.mapper.ExecutorMapper.findExecutorById"))
     })
     List<JobInfo> selectAll();
 
+    @Update("update self_jobinfo set job_status=#{jobStatus} where id=#{id}")
+    void updateJobStatus(@Param("id") long id, @Param("jobStatus") int jobStatus);
+
+    @Select("select * from self_jobinfo where id=#{id}")
+    @Results({
+            @Result(property = "jobName", column = "job_name"),
+            @Result(property = "jobGroup", column = "job_group"),
+            @Result(property = "jobCron", column = "job_cron"),
+            @Result(property = "jobDesc", column = "job_desc"),
+            @Result(property = "jobFilePath", column = "job_filepath"),
+            @Result(property = "jobFileType", column = "job_filetype"),
+            @Result(property = "addTime", column = "add_time", jdbcType = JdbcType.DATE),
+            @Result(property = "updateTime", column = "update_time", jdbcType = JdbcType.DATE),
+            @Result(property = "jobStatus",column = "job_status"),
+            @Result(property = "executorInfo",column="exector_id",one = @One(select = "gtja.taskframework.mapper.ExecutorMapper.findExecutorById"))
+    })
+    JobInfo selectByJobId(long id);
 }

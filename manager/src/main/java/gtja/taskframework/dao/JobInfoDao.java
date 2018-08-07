@@ -2,6 +2,7 @@ package gtja.taskframework.dao;
 
 import gtja.taskframework.entity.JobInfo;
 import gtja.taskframework.mapper.JobInfoMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -39,4 +40,8 @@ public class JobInfoDao {
     public List<JobInfo> listAllJob(){
         return jobInfoMapper.selectAll();
     }
+
+    public void jobStatus( long id,  int jobStatus) {jobInfoMapper.updateJobStatus(id, jobStatus);}
+
+    public JobInfo findJobById(long id){ return  jobInfoMapper.selectByJobId(id); }
 }
